@@ -1,7 +1,9 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Yajra\DataTables\DataTables;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,8 +17,13 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware(['auth:web'])->group(function () {
-    Route::get('/', function () {
+    Route::get('/', function (Request $request) {
         // return view('welcome');
+        if ($request->ajax()) {
+            $data = User::query();
+            return DataTables::of($data)->make(true);
+        }
+        
         return view('index');
     })->name('index');
 
