@@ -72,8 +72,8 @@
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Authorization :</h6>
-                        <a class="collapse-item" href="{{ route('permission') }}">Permissions</a>
-                        <a class="collapse-item" href="{{ route('roles') }}">Roles</a>
+                        <a class="collapse-item" href="{{ route('permissions.index') }}">Permissions</a>
+                        <a class="collapse-item" href="{{ route('roles.index') }}">Roles</a>
                     </div>
                 </div>
             </li>

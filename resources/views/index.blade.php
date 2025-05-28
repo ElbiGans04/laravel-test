@@ -32,7 +32,6 @@
 @endsection
 @section('scripts')
     <script>
-        console.log('jQuery test:', typeof $); 
         $(function () {
             $('#users-table').DataTable({
                 processing: true,

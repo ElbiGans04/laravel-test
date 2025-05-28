@@ -2,7 +2,10 @@
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 use Yajra\DataTables\DataTables;
 
 /*
@@ -23,19 +26,69 @@ Route::middleware(['auth:web'])->group(function () {
             $data = User::query();
             return DataTables::of($data)->make(true);
         }
-        
+
         return view('index');
     })->name('index');
 
-    Route::get('/roles', function () {
-        // return view('welcome');
-        return view('roles');
-    })->name('roles');
+    Route::group(['prefix' => '/roles', 'as' => 'roles.'], function () {
+        Route::get('', function (Request $request) {
+            if ($request->ajax()) {
+                $data = Role::query();
+                return DataTables::of($data)->make(true);
+            }
+            return view('roles');
+        })->name('index');
 
-    Route::get('/permission', function () {
-        // return view('welcome');
-        return view('permission');
-    })->name('permission');
+        Route::get('/create', function (Request $request) {
+            if ($request->ajax()) {
+                $data = Role::query();
+                return DataTables::of($data)->make(true);
+            }
+            return view('roles');
+        })->name('create');
+    });
+
+    Route::group(['prefix' => '/permissions', 'as' => 'permissions.'], function () {
+        Route::get('', function (Request $request) {
+            if ($request->ajax()) {
+                $data = Permission::query();
+                return DataTables::of($data)->make(true);
+            }
+            return view('permission');
+        })->name('index');
+
+        Route::get('/create', function (Request $request) {
+            return view('permissions.create');
+        })->name('create');
+
+        Route::post('/create', function (Request $request) {
+            $input = $request->input();
+            Permission::create(["name" => $input['name']]);
+            return redirect()->route('permissions.index');
+        })->name('create.post');
+
+        Route::get('/update', function (Request $request) {
+            $id = $request->input()['id'];
+            $data = Permission::find($id);
+            return view('permissions.update', ["data" => $data]);
+        })->name('update');
+
+        Route::post('/update', function (Request $request) {
+            $input = $request->input();
+            $find = Permission::find($input['id']);
+            $find['name'] = $input['name'];
+            $find->save();
+            return redirect()->route('permissions.index');
+        })->name('update.post');
+
+        Route::get('/delete', function (Request $request) {
+            $data = $request->query();
+            $found = Permission::find($data['id']);
+            $found->delete();
+            return redirect()->route('permissions.index');
+
+        })->name('delete');
+    });
 });
 
 Route::group(['prefix' => '/auth'], function () {
