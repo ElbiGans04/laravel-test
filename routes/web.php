@@ -19,6 +19,16 @@ Route::middleware(['auth:web'])->group(function () {
         // return view('welcome');
         return view('index');
     })->name('index');
+
+    Route::get('/roles', function () {
+        // return view('welcome');
+        return view('roles');
+    })->name('roles');
+
+    Route::get('/permission', function () {
+        // return view('welcome');
+        return view('permission');
+    })->name('permission');
 });
 
 Route::group(['prefix' => '/auth'], function () {

@@ -1,18 +1,18 @@
 @extends('layouts.index')
 @section('title')
-Users | Bengkel APP
+Permission | Bengkel APP
 @endsection
 @section('content')
     <div class="container-fluid">
 
         <!-- Page Heading -->
-        <h1 class="h3 mb-2 text-gray-800">Users</h1>
-        <p class="mb-4">Menampilkan semua data yang terkait dengan Users</a>.</p>
+        <h1 class="h3 mb-2 text-gray-800">Permission</h1>
+        <p class="mb-4">Menampilkan semua data yang terkait dengan Permission</a>.</p>
 
         <!-- DataTales Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Table Users</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Table Permission</h6>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
