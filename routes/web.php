@@ -3,6 +3,7 @@
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -22,13 +23,68 @@ use Yajra\DataTables\DataTables;
 Route::middleware(['auth:web'])->group(function () {
     Route::get('/', function (Request $request) {
         // return view('welcome');
+        // return User::where('id', '!=', Auth::user()['id'])->get();
         if ($request->ajax()) {
-            $data = User::query();
+            $data = User::where('id', '!=', Auth::user()['id'])->get();
             return DataTables::of($data)->make(true);
         }
 
         return view('index');
     })->name('index');
+
+    Route::group(['prefix' => '/users', 'as' => 'users.'], function () {
+        Route::get('/create', function (Request $request) {
+            $data = Role::all();
+            return view('users.create', ["data" => $data]);
+        })->name('create');
+
+        Route::post('/create', function (Request $request) {
+            $input = $request->input();
+            $user = new User();
+            $user->name = $input['name'];
+            $user->email = $input['email'];
+            $user->password = Hash::make($input['password']);
+            $user->save();
+            $role = Role::find($input['role']);
+            $user->assignRole($role);
+            return redirect()->route('index');
+        })->name('create.post');
+
+        Route::get('/update', function (Request $request) {
+            $id = $request->input()['id'];
+            $roles = Role::all();
+            $data = User::with('roles')->where(['id' => $id])->first();
+            return view('users.update', ['data' => $data, "roles" => $roles]);
+        })->name('update');
+
+        Route::post('/update', function (Request $request) {
+            $input = $request->input();
+            $find = User::find($input['id']);
+            $find->name = $input['name'];
+            $find->email = $input['email'];
+            $find->password = Hash::make($input['password']);
+            $find->save();
+
+            $haveRole = Role::find($find->roles[0]['id']);
+            $newRole = Role::find($input['role']);
+            $changeRole = $input['role'] != $find->roles[0]['id'];
+            if ($changeRole) {
+                $find->removeRole($haveRole);
+                $find->assignRole($newRole);
+
+            }
+
+            return view('index');
+        })->name('update.post');
+
+        Route::get('/delete', function (Request $request) {
+            $data = $request->query();
+            $found = User::find($data['id']);
+            $found->delete();
+            return redirect()->route('index');
+
+        })->name('delete');
+    });
 
     Route::group(['prefix' => '/roles', 'as' => 'roles.'], function () {
         Route::get('', function (Request $request) {
@@ -38,7 +94,7 @@ Route::middleware(['auth:web'])->group(function () {
                     if (count($role->permissions) > 0) {
                         $html = "";
                         foreach (collect($role->permissions->pluck('name')) as $item) {
-                            $html .= "<span class='badge badge-primary m-1'>".$item."</span>";
+                            $html .= "<span class='badge badge-primary m-1'>" . $item . "</span>";
                         }
 
                         return $html;
