@@ -120,8 +120,8 @@ Route::middleware(['auth:web'])->group(function () {
                 })->addColumn('actions', function ($user) {
                     $html = '';
                     $data = Auth::user()->roles[0]['permissions'];
-                    $isAllowUpdate = collect($data)->contains('name', 'users.update');
-                    $isAllowDelete = collect($data)->contains('name', 'users.delete');
+                    $isAllowUpdate = collect($data)->contains('name', 'roles.update');
+                    $isAllowDelete = collect($data)->contains('name', 'roles.delete');
 
                     if ($isAllowUpdate) {
                         $html .= "<a href='" . route('roles.update') . "?id=" . $user['id'] . "' class='btn m-1 btn-primary'>Update</a>";
