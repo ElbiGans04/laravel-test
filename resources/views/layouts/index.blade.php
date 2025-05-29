@@ -48,7 +48,7 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
+            <li class="nav-item {{ Route::currentRouteName() == "index" ? 'active' : '' }}">
                 <a class="nav-link" href="{{route('index')}}">
                     <i class="fas fa-users"></i>
                     <span>Users</span></a>
@@ -63,17 +63,17 @@
             </div>
 
             <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+            <li class="nav-item {{ (Route::currentRouteName() == "permissions.index" || Route::currentRouteName() == "roles.index") ? 'active' : '' }}">
+                <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapseTwo"
                     aria-expanded="true" aria-controls="collapseTwo">
                     <i class="fas fa-fw fa-cog"></i>
                     <span>Auth</span>
                 </a>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div id="collapseTwo" class="collapse {{ (Route::currentRouteName() == "permissions.index" || Route::currentRouteName() == "roles.index") ? 'show' : '' }}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Authorization :</h6>
-                        <a class="collapse-item" href="{{ route('permissions.index') }}">Permissions</a>
-                        <a class="collapse-item" href="{{ route('roles.index') }}">Roles</a>
+                        <a class="collapse-item {{ Route::currentRouteName() == "permissions.index" ? "active" : '' }}" href="{{ route('permissions.index') }}">Permissions</a>
+                        <a class="collapse-item {{ Route::currentRouteName() == "roles.index" ? "active" : '' }}" href="{{ route('roles.index') }}">Roles</a>
                     </div>
                 </div>
             </li>
