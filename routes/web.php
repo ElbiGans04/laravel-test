@@ -46,13 +46,13 @@ Route::middleware(['auth:web'])->group(function () {
         }
 
         return view('index');
-    })->name('index');
+    })->name('index')->middleware(['permission:users.read']);
 
     Route::group(['prefix' => '/users', 'as' => 'users.'], function () {
         Route::get('/create', function (Request $request) {
             $data = Role::all();
             return view('users.create', ["data" => $data]);
-        })->name('create');
+        })->name('create')->middleware(['permission:users.create']);
 
         Route::post('/create', function (Request $request) {
             $input = $request->input();
@@ -64,14 +64,14 @@ Route::middleware(['auth:web'])->group(function () {
             $role = Role::find($input['role']);
             $user->assignRole($role);
             return redirect()->route('index');
-        })->name('create.post');
+        })->name('create.post')->middleware(['permission:users.create']);
 
         Route::get('/update', function (Request $request) {
             $id = $request->input()['id'];
             $roles = Role::all();
             $data = User::with('roles')->where(['id' => $id])->first();
             return view('users.update', ['data' => $data, "roles" => $roles]);
-        })->name('update');
+        })->name('update')->middleware(['permission:users.update']);
 
         Route::post('/update', function (Request $request) {
             $input = $request->input();
@@ -91,7 +91,7 @@ Route::middleware(['auth:web'])->group(function () {
             }
 
             return redirect()->route('index');
-        })->name('update.post');
+        })->name('update.post')->middleware(['permission:users.update']);
 
         Route::get('/delete', function (Request $request) {
             $data = $request->query();
@@ -99,7 +99,7 @@ Route::middleware(['auth:web'])->group(function () {
             $found->delete();
             return redirect()->route('index');
 
-        })->name('delete');
+        })->name('delete')->middleware(['permission:users.delete']);
     });
 
     Route::group(['prefix' => '/roles', 'as' => 'roles.'], function () {
@@ -134,7 +134,7 @@ Route::middleware(['auth:web'])->group(function () {
                 })->rawColumns(['permissions', 'actions'])->make(true);
             }
             return view('roles.index');
-        })->name('index');
+        })->name('index')->middleware(['permission:roles.read']);
 
         Route::get('/create', function (Request $request) {
             if ($request->ajax()) {
@@ -144,7 +144,7 @@ Route::middleware(['auth:web'])->group(function () {
 
             $dataPermission = Permission::all();
             return view('roles.create', ["data" => $dataPermission]);
-        })->name('create');
+        })->name('create')->middleware(['permission:roles.create']);
 
         Route::post('/create', function (Request $request) {
             $dataInput = collect($request->input());
@@ -167,7 +167,7 @@ Route::middleware(['auth:web'])->group(function () {
             }
 
             return redirect()->route('roles.index');
-        })->name('create.post');
+        })->name('create.post')->middleware(['permission:roles.create']);
 
         Route::get('/update', function (Request $request) {
             $id = $request->input()['id'];
@@ -180,7 +180,7 @@ Route::middleware(['auth:web'])->group(function () {
             }
 
             return view('roles.update', ["data" => $data, "permissions" => $dataPermission, "alreadyPermissions" => $dataAlready]);
-        })->name('update');
+        })->name('update')->middleware(['permission:roles.update']);
 
         Route::post('/update', function (Request $request) {
             $dataInput = collect($request->input());
@@ -221,7 +221,7 @@ Route::middleware(['auth:web'])->group(function () {
             }
 
             return redirect()->route('roles.index');
-        })->name('update.post');
+        })->name('update.post')->middleware(['permission:roles.update']);
 
 
         Route::get('/delete', function (Request $request) {
@@ -230,7 +230,7 @@ Route::middleware(['auth:web'])->group(function () {
             $found->delete();
             return redirect()->route('roles.index');
 
-        })->name('delete');
+        })->name('delete')->middleware(['permission:roles.delete']);
     });
 
     Route::group(['prefix' => '/permissions', 'as' => 'permissions.'], function () {
@@ -240,23 +240,23 @@ Route::middleware(['auth:web'])->group(function () {
                 return DataTables::of($data)->make(true);
             }
             return view('permissions.index');
-        })->name('index');
+        })->name('index')->middleware(['permission:permissions.read']);
 
         Route::get('/create', function (Request $request) {
             return view('permissions.create');
-        })->name('create');
+        })->name('create')->middleware(['permission:permissions.create']);
 
         Route::post('/create', function (Request $request) {
             $input = $request->input();
             Permission::create(["name" => $input['name']]);
             return redirect()->route('permissions.index');
-        })->name('create.post');
+        })->name('create.post')->middleware(['permission:permissions.create']);
 
         Route::get('/update', function (Request $request) {
             $id = $request->input()['id'];
             $data = Permission::find($id);
             return view('permissions.update', ["data" => $data]);
-        })->name('update');
+        })->name('update')->middleware(['permission:permissions.update']);
 
         Route::post('/update', function (Request $request) {
             $input = $request->input();
@@ -264,7 +264,7 @@ Route::middleware(['auth:web'])->group(function () {
             $find['name'] = $input['name'];
             $find->save();
             return redirect()->route('permissions.index');
-        })->name('update.post');
+        })->name('update.post')->middleware(['permission:permissions.update']);
 
         Route::get('/delete', function (Request $request) {
             $data = $request->query();
@@ -272,7 +272,7 @@ Route::middleware(['auth:web'])->group(function () {
             $found->delete();
             return redirect()->route('permissions.index');
 
-        })->name('delete');
+        })->name('delete')->middleware(['permission:permissions.delete']);
     });
 });
 
