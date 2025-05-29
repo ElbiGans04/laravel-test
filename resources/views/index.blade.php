@@ -10,10 +10,12 @@
 
 
         <!-- Create -->
-        <a href="{{ route('users.create') }}" class="btn btn-primary mb-4" type="button">
-            <i class="fas fa-plus fa-sm mr-2"></i>
-            <span>Tambah Data </span>
-        </a>
+        @can('users.create')
+            <a href="{{ route('users.create') }}" class="btn btn-primary mb-4" type="button">
+                <i class="fas fa-plus fa-sm mr-2"></i>
+                <span>Tambah Data </span>
+            </a>
+        @endcan
 
         <!-- DataTales Example -->
         <div class="card shadow mb-4">
@@ -41,12 +43,6 @@
 @endsection
 @section('scripts')
     <script>
-        function DeleteData(id) {
-            const haveTo = confirm('Delete Data ?');
-            if (haveTo) {
-                window.location = `{{ route('users.delete') }}?id=${id}`;
-            }
-        }
         $(function () {
             $('#users-table').DataTable({
                 processing: true,
@@ -57,15 +53,7 @@
                     { data: 'name', name: 'name' },
                     { data: 'email', name: 'email' },
                     { data: 'role', name: 'role' },
-                    {
-                        data: null,
-                        render: function (data) {
-                            return `
-                                            <a href='{{ route('users.update')}}?id=${data?.id}' class='btn btn-primary'>Update</a>
-                                            <a href='javascript:DeleteData(${data?.id})' class='btn btn-danger'>Delete</a>
-                                        `
-                        }
-                    }
+                    { data: 'actions', name: 'actions' },
                 ]
             });
         });

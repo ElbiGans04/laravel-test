@@ -20,9 +20,11 @@
                                 id="basic-url" aria-describedby="basic-addon3">
                         </div>
 
-                        <div class="input-group">
-                            <button class="btn btn-primary" type="submit">Update Data</button>
-                        </div>
+                        @can('permissions.update')
+                            <div class="input-group">
+                                <button class="btn btn-primary" type="submit">Update Data</button>
+                            </div>
+                        @endcan
                     </div>
                 </form>
             </div>

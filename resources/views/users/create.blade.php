@@ -49,9 +49,11 @@
 
                     </div>
 
-                    <div class="form-group">
-                        <button class="btn btn-primary" type="submit">Create Data</button>
-                    </div>
+                    @can('users.create')
+                        <div class="form-group">
+                            <button class="btn btn-primary" type="submit">Create Data</button>
+                        </div>
+                    @endcan
                 </form>
             </div>
         </div>

@@ -25,10 +25,24 @@ Route::middleware(['auth:web'])->group(function () {
         // return view('welcome');
         // return User::where('id', '!=', Auth::user()['id'])->get();
         if ($request->ajax()) {
-            $data = User::where('id', '!=', Auth::user()['id'])->with('roles')->get();
+            $data = User::where('id', '!=', Auth::user()['id'])->with(['roles', 'roles.permissions'])->get();
             return DataTables::of($data)->addColumn('role', function ($user) {
                 return $user->roles->pluck('name')->implode(', ');
-            })->make(true);
+            })->addColumn('actions', function ($user) {
+                $html = '';
+                $data = Auth::user()->roles[0]['permissions'];
+                $isAllowUpdate = collect($data)->contains('name', 'users.update');
+                $isAllowDelete = collect($data)->contains('name', 'users.delete');
+
+                if ($isAllowUpdate) {
+                    $html .= "<a href='" . route('users.update') . "?id=" . $user['id'] . "' class='btn m-1 btn-primary'>Update</a>";
+                }
+                if ($isAllowDelete) {
+                    $html .= "<a href='" . route('users.delete') . "?id=" . $user['id'] . "' class='btn m-1 btn-danger'>Delete</a>";
+                }
+
+                return $html;
+            })->rawColumns(['actions'])->make(true);
         }
 
         return view('index');
@@ -103,7 +117,21 @@ Route::middleware(['auth:web'])->group(function () {
                     }
 
                     return '';
-                })->rawColumns(['permissions'])->make(true);
+                })->addColumn('actions', function ($user) {
+                    $html = '';
+                    $data = Auth::user()->roles[0]['permissions'];
+                    $isAllowUpdate = collect($data)->contains('name', 'users.update');
+                    $isAllowDelete = collect($data)->contains('name', 'users.delete');
+
+                    if ($isAllowUpdate) {
+                        $html .= "<a href='" . route('roles.update') . "?id=" . $user['id'] . "' class='btn m-1 btn-primary'>Update</a>";
+                    }
+                    if ($isAllowDelete) {
+                        $html .= "<a href='" . route('roles.delete') . "?id=" . $user['id'] . "' class='btn m-1 btn-danger'>Delete</a>";
+                    }
+
+                    return $html;
+                })->rawColumns(['permissions', 'actions'])->make(true);
             }
             return view('roles');
         })->name('index');

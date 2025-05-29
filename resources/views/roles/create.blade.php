@@ -25,16 +25,19 @@
                         <div class="row p-3">
                             @foreach ($data as $item)
                                 <div class="custom-control custom-switch col-sm-4">
-                                    <input type="checkbox" name="permission-{{ $item['id'] }}" class="custom-control-input" id="{{ $item['id'] }}">
+                                    <input type="checkbox" name="permission-{{ $item['id'] }}" class="custom-control-input"
+                                        id="{{ $item['id'] }}">
                                     <label class="custom-control-label" for="{{ $item['id'] }}">{{ $item['name'] }}</label>
                                 </div>
                             @endforeach
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <button class="btn btn-primary" type="submit">Create Data</button>
-                    </div>
+                    @can('roles.create')
+                        <div class="form-group">
+                            <button class="btn btn-primary" type="submit">Create Data</button>
+                        </div>
+                    @endcan
                 </form>
             </div>
         </div>

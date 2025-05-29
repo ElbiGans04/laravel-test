@@ -27,17 +27,18 @@
                         <div class="row p-3">
                             @foreach ($permissions as $item)
                                 <div class="custom-control custom-switch col-sm-4">
-                                    <input {{isset($alreadyPermissions[$item['id']]) ? "checked" : "" }} type="checkbox" name="permission-{{ $item['id'] }}" class="custom-control-input"
-                                        id="{{ $item['id'] }}">
+                                    <input {{isset($alreadyPermissions[$item['id']]) ? "checked" : "" }} type="checkbox"
+                                        name="permission-{{ $item['id'] }}" class="custom-control-input" id="{{ $item['id'] }}">
                                     <label class="custom-control-label" for="{{ $item['id'] }}">{{ $item['name'] }}</label>
                                 </div>
                             @endforeach
                         </div>
                     </div>
-
-                    <div class="input-group">
-                        <button class="btn btn-primary" type="submit">Update Data</button>
-                    </div>
+                    @can('roles.update')
+                        <div class="input-group">
+                            <button class="btn btn-primary" type="submit">Update Data</button>
+                        </div>
+                    @endcan
                 </form>
             </div>
         </div>
