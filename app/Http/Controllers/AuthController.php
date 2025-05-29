@@ -16,7 +16,10 @@ class AuthController extends Controller
         ]);
 
         if ($try) {
-            $request->session()->regenerate();
+            // $request->session()->regenerate();
+            $request->session()->flash('modal-title', 'Berhasil');
+            $request->session()->flash('modal-text', 'Selamat Anda Berhasil Login');
+            $request->session()->flash('modal-icon', 'success');
             return redirect()->route('index');
         }
 

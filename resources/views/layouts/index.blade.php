@@ -358,6 +358,9 @@
             </div>
         </div>
     </div>
+
+    <!-- All Modal Message -->
+
 </body>
 
 <!-- Bootstrap core JavaScript-->
@@ -371,11 +374,26 @@
 <script src="{{  asset('js/sb-admin-2.min.js')}}"></script>
 
 <!-- Page level plugins -->
-<script src="{{ asset('js/vendor/chart.js/Chart.min.js') }}"></script>
+<!-- <script src="{{ asset('js/vendor/chart.js/Chart.min.js') }}"></script> -->
 
 <!-- Page level custom scripts -->
-<script src="{{  asset('js/demo/chart-area-demo.js')}}"></script>
-<script src="{{  asset('js/demo/chart-pie-demo.js')}}"></script>
+<!-- <script src="{{  asset('js/demo/chart-area-demo.js')}}"></script>
+<script src="{{  asset('js/demo/chart-pie-demo.js')}}"></script> -->
+
+<!-- Sweet Alert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Custom -->
+@if (Session::has('modal-title'))
+    <script>
+        Swal.fire({
+            title: "{{ Session::get('modal-title') }}",
+            text: "{{ Session::get('modal-text') }}",
+            icon: "{{ Session::get('modal-icon') }}",
+            confirmButtonText: 'OK'
+        })
+    </script>
+@endif
 
 <!-- Additional Scrips -->
 @yield('scripts');
