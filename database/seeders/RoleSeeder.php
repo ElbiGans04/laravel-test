@@ -35,10 +35,10 @@ class RoleSeeder extends Seeder
         $pemilik->givePermissionTo(Permission::all());
         $admin->givePermissionTo(
             [
-                'book.create',
-                'book.read',
-                'book.update',
-                'book.delete',
+                'books.create',
+                'books.read',
+                'books.update',
+                'books.delete',
                 'cars.read'
             ]
         );

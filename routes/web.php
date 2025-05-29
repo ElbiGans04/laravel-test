@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BookController;
+use App\Http\Controllers\CarController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -44,6 +46,24 @@ Route::middleware(['auth:web'])->group(function () {
         Route::get('/update', [PermissionController::class, "updateView"])->name('update')->middleware(['permission:permissions.update']);
         Route::post('/update', [PermissionController::class, "update"])->name('update.post')->middleware(['permission:permissions.update']);
         Route::get('/delete', [PermissionController::class, "delete"])->name('delete')->middleware(['permission:permissions.delete']);
+    });
+
+    Route::group(['prefix' => '/cars', 'as' => 'cars.'], function () {
+        Route::get('', [CarController::class, "indexView"])->name('index')->middleware(['permission:cars.read']);
+        Route::get('/create', [CarController::class, "createView"])->name('create')->middleware(['permission:cars.create']);
+        Route::post('/create', [CarController::class, "create"])->name('create.post')->middleware(['permission:cars.create']);
+        Route::get('/update', [CarController::class, "updateView"])->name('update')->middleware(['permission:cars.update']);
+        Route::post('/update', [CarController::class, "update"])->name('update.post')->middleware(['permission:cars.update']);
+        Route::get('/delete', [CarController::class, "delete"])->name('delete')->middleware(['permission:cars.delete']);
+    });
+
+    Route::group(['prefix' => '/books', 'as' => 'books.'], function () {
+        Route::get('', [BookController::class, "indexView"])->name('index')->middleware(['permission:books.read']);
+        Route::get('/create', [BookController::class, "createView"])->name('create')->middleware(['permission:books.create']);
+        Route::post('/create', [BookController::class, "create"])->name('create.post')->middleware(['permission:books.create']);
+        Route::get('/update', [BookController::class, "updateView"])->name('update')->middleware(['permission:books.update']);
+        Route::post('/update', [BookController::class, "update"])->name('update.post')->middleware(['permission:books.update']);
+        Route::get('/delete', [BookController::class, "delete"])->name('delete')->middleware(['permission:books.delete']);
     });
 });
 

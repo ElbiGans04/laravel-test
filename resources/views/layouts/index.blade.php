@@ -58,17 +58,17 @@
 
             <!-- Nav Item - Dashboard -->
             @can('users.read')
-                <li class="nav-item {{ Route::currentRouteName() == "index" ? 'active' : '' }}">
+                <li class="nav-item {{ Route::currentRouteName() == "books.index" ? 'active' : '' }}">
                     <a class="nav-link" href="{{route('index')}}">
                         <i class="fas fa-book"></i>
                         <span>Book</span></a>
                 </li>
             @endcan
-            
+
             <!-- Nav Item - Dashboard -->
             @can('car.read')
-                <li class="nav-item {{ Route::currentRouteName() == "index" ? 'active' : '' }}">
-                    <a class="nav-link" href="{{route('index')}}">
+                <li class="nav-item {{ Route::currentRouteName() == "cars.index" ? 'active' : '' }}">
+                    <a class="nav-link" href="{{route('cars.index')}}">
                         <i class="fas fa-car"></i>
                         <span>Car</span></a>
                 </li>
