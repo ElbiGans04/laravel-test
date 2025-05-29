@@ -44,8 +44,96 @@ Route::middleware(['auth:web'])->group(function () {
                 $data = Role::query();
                 return DataTables::of($data)->make(true);
             }
-            return view('roles');
+
+            $dataPermission = Permission::all();
+            return view('roles.create', ["data" => $dataPermission]);
         })->name('create');
+
+        Route::post('/create', function (Request $request) {
+            $dataInput = collect($request->input());
+            $dataFilter = $dataInput->filter(function ($value, $index) {
+                return strpos($index, 'permission-') !== false;
+            })->keys()->map(function ($item) {
+                return explode('permission-', $item)[1];
+            });
+
+            // Create Role
+            $newRole = new Role();
+            $newRole->name = $dataInput['name'];
+            $newRole->save();
+
+            // Looping Search Data
+            foreach ($dataFilter as $item) {
+                $permission = Permission::findById($item);
+                $newRole->givePermissionTo($permission);
+
+            }
+
+            return redirect()->route('roles.index');
+        })->name('create.post');
+
+        Route::get('/update', function (Request $request) {
+            $id = $request->input()['id'];
+            $data = Role::find($id);
+            $dataPermission = Permission::all();
+
+            $dataAlready = [];
+            foreach (collect($data->permissions) as $item) {
+                $dataAlready[$item['id']] = 'ok';
+            }
+
+            return view('roles.update', ["data" => $data, "permissions" => $dataPermission, "alreadyPermissions" => $dataAlready]);
+        })->name('update');
+
+        Route::post('/update', function (Request $request) {
+            $dataInput = collect($request->input());
+            // Permission Yang Dikirim kalau ada [5,2,1]
+            $dataFilter = $dataInput->filter(function ($value, $index) {
+                return strpos($index, 'permission-') !== false;
+            })->keys()->map(function ($item) {
+                return explode('permission-', $item)[1];
+            });
+            // return $dataFilter;
+
+            $find = Role::find($dataInput['id']);
+            $find->name = $dataInput['name'];
+            $find->save();
+            // [{}]
+            $alreadyHavePermission = collect($find->permissions);
+
+            // Check Permission Yang Di Hapus
+            $removePermission = [];
+            foreach ($alreadyHavePermission as $item) {
+                if ($dataFilter->search($item['id']) === false) {
+                    $removePermission[] = $item['id'];
+                }
+            }
+
+            // Hapus Permissionnya jika dinonaktifkan
+            foreach ($removePermission as $item) {
+                $itemModel = Permission::findById($item);
+                $find->revokePermissionTo($itemModel);
+            }
+
+            // Harus cari tau gimana ketika ada item yang sudah di assign
+            foreach ($dataFilter as $item) {
+                if ( $alreadyHavePermission->contains('id', $item)  === false) {
+                    $itemModel = Permission::findById($item);
+                    $find->givePermissionTo($itemModel);
+                }
+            }
+
+            return redirect()->route('roles.index');
+        })->name('update.post');
+
+
+        Route::get('/delete', function (Request $request) {
+            $data = $request->query();
+            $found = Role::find($data['id']);
+            $found->delete();
+            return redirect()->route('roles.index');
+
+        })->name('delete');
     });
 
     Route::group(['prefix' => '/permissions', 'as' => 'permissions.'], function () {

@@ -27,6 +27,7 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Nama</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                     </table>
@@ -37,6 +38,12 @@
 @endsection
 @section('scripts')
     <script>
+        function DeleteData(id) {
+            const haveTo = confirm('Delete Data ?');
+            if (haveTo) {
+                window.location = `{{ route('roles.delete') }}?id=${id}`;
+            }
+        }
         $(function () {
             $('#roles-table').DataTable({
                 processing: true,
@@ -45,6 +52,15 @@
                 columns: [
                     { data: 'id', name: 'id' },
                     { data: 'name', name: 'name' },
+                    {
+                        data: null,
+                        render: function (data) {
+                            return `
+                                        <a href='{{ route('roles.update')}}?id=${data?.id}' class='btn btn-primary'>Update</a>
+                                        <a href='javascript:DeleteData(${data?.id})' class='btn btn-danger'>Delete</a>
+                                    `
+                        }
+                    }
                 ]
             });
         });
