@@ -46,6 +46,15 @@ class UserController extends Controller
     public function create(Request $request)
     {
         $input = $request->input();
+
+        $emailAlreadyRegister = User::where('email', '=', $input['email']);
+        if (isset($emailAlreadyRegister)) {
+            $request->session()->flash('modal-title', 'Gagal');
+            $request->session()->flash('modal-text', 'Email sudah terdaftar');
+            $request->session()->flash('modal-icon', 'error');
+            return redirect()->route('index');
+        }
+
         $user = new User();
         $user->name = $input['name'];
         $user->email = $input['email'];
@@ -59,8 +68,16 @@ class UserController extends Controller
     public function updateView(Request $request)
     {
         $id = $request->input()['id'];
-        $roles = Role::all();
         $data = User::with('roles')->where(['id' => $id])->first();
+
+        if (!isset($data)) {
+            $request->session()->flash('modal-title', 'Gagal');
+            $request->session()->flash('modal-text', 'Data tidak ditemukan');
+            $request->session()->flash('modal-icon', 'error');
+            return redirect()->route('index');
+        }
+
+        $roles = Role::all();
         return view('users.update', ['data' => $data, "roles" => $roles]);
     }
 
