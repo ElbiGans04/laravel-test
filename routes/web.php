@@ -33,8 +33,19 @@ Route::middleware(['auth:web'])->group(function () {
     Route::group(['prefix' => '/roles', 'as' => 'roles.'], function () {
         Route::get('', function (Request $request) {
             if ($request->ajax()) {
-                $data = Role::query();
-                return DataTables::of($data)->make(true);
+                $data = Role::with('permissions');
+                return DataTables::of($data)->addColumn('permissions', function ($role) {
+                    if (count($role->permissions) > 0) {
+                        $html = "";
+                        foreach (collect($role->permissions->pluck('name')) as $item) {
+                            $html .= "<span class='badge badge-primary m-1'>".$item."</span>";
+                        }
+
+                        return $html;
+                    }
+
+                    return '';
+                })->rawColumns(['permissions'])->make(true);
             }
             return view('roles');
         })->name('index');
@@ -117,7 +128,7 @@ Route::middleware(['auth:web'])->group(function () {
 
             // Harus cari tau gimana ketika ada item yang sudah di assign
             foreach ($dataFilter as $item) {
-                if ( $alreadyHavePermission->contains('id', $item)  === false) {
+                if ($alreadyHavePermission->contains('id', $item) === false) {
                     $itemModel = Permission::findById($item);
                     $find->givePermissionTo($itemModel);
                 }

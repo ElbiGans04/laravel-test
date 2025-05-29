@@ -27,6 +27,7 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Nama</th>
+                                <th>Permissions</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -52,6 +53,7 @@
                 columns: [
                     { data: 'id', name: 'id' },
                     { data: 'name', name: 'name' },
+                     { data: 'permissions', name: 'permissions' },
                     {
                         data: null,
                         render: function (data) {
