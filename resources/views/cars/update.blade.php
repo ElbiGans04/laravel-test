@@ -10,7 +10,7 @@
                 <h6 class="m-0 font-weight-bold text-primary">Update Car</h6>
             </div>
             <div class="card-body">
-                <form action="{{ route('permissions.update.post') }}" method="post">
+                <form action="{{ route('cars.update.post') }}" method="post">
                     @csrf
                     <div class="form-group">
                         <input type="hidden" name="id" value="{{ $data['id'] }}">
@@ -20,7 +20,7 @@
                                 id="basic-url" aria-describedby="basic-addon3">
                         </div>
 
-                        @can('permissions.update')
+                        @can('cars.update')
                             <div class="input-group">
                                 <button class="btn btn-primary" type="submit">Update Data</button>
                             </div>

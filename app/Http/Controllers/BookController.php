@@ -34,22 +34,74 @@ class BookController extends Controller
     }
     function createView(Request $request)
     {
-        return view('books.index');
+        return view('books.create');
     }
     function create(Request $request)
     {
-        return view('books.index');
+        $data = $request->input();
+        $book = new Book();
+        $book->name = $data['name'];
+        $book->save();
+
+        $request->session()->flash('modal-title', 'Berhasil');
+        $request->session()->flash('modal-text', 'Data berhasil dibuat');
+        $request->session()->flash('modal-icon', 'success');
+
+        return redirect()->route('books.index');
     }
     function updateView(Request $request)
     {
-        return view('books.index');
+        $data = $request->input();
+        $find = Book::find($data['id']);
+
+        if (!isset($find)) {
+            $request->session()->flash('modal-title', 'Gagal');
+            $request->session()->flash('modal-text', 'Data tidak ditemukan');
+            $request->session()->flash('modal-icon', 'error');
+            return redirect()->route('books.index');
+        }
+
+        return view('books.update', ['data' => $find]);
     }
     function update(Request $request)
     {
-        return view('books.index');
+        $data = $request->input();
+        $find = Book::find($data['id']);
+
+        if (!isset($find)) {
+            $request->session()->flash('modal-title', 'Gagal');
+            $request->session()->flash('modal-text', 'Data tidak ditemukan');
+            $request->session()->flash('modal-icon', 'error');
+            return redirect()->route('books.index');
+        }
+
+        $find->name = $data['name'];
+        $find->save();
+
+        $request->session()->flash('modal-title', 'Berhasil');
+        $request->session()->flash('modal-text', 'Data berhasil diubah');
+        $request->session()->flash('modal-icon', 'success');
+
+        return redirect()->route('books.index');
     }
     function delete(Request $request)
     {
-        return view('books.index');
+        $data = $request->input();
+        $find = Book::find($data['id']);
+
+        if (!isset($find)) {
+            $request->session()->flash('modal-title', 'Gagal');
+            $request->session()->flash('modal-text', 'Data tidak ditemukan');
+            $request->session()->flash('modal-icon', 'error');
+            return redirect()->route('books.index');
+        }
+
+        $find->delete();
+
+        $request->session()->flash('modal-title', 'Berhasil');
+        $request->session()->flash('modal-text', 'Data berhasil dihapus');
+        $request->session()->flash('modal-icon', 'success');
+
+        return redirect()->route('books.index');
     }
 }

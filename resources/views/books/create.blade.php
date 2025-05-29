@@ -10,7 +10,7 @@
                 <h6 class="m-0 font-weight-bold text-primary">Create Book</h6>
             </div>
             <div class="card-body">
-                <form action="{{ route('permissions.create.post') }}" method="post">
+                <form action="{{ route('books.create.post') }}" method="post">
                     @csrf
                     <div class="form-group">
                         <label for="basic-url">Name</label>
@@ -18,7 +18,7 @@
                             <input name="name" required type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
                         </div>
 
-                        @can('permissions.create')
+                        @can('books.create')
                         <div class="input-group">
                             <button class="btn btn-primary" type="submit">Create Data</button>
                         </div>
