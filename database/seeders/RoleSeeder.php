@@ -39,14 +39,14 @@ class RoleSeeder extends Seeder
                 'book.read',
                 'book.update',
                 'book.delete',
-                'car.read'
+                'cars.read'
             ]
         );
         $petugas->givePermissionTo([
-            'car.create',
-            'car.read',
-            'car.update',
-            'car.delete',
+            'cars.create',
+            'cars.read',
+            'cars.update',
+            'cars.delete',
         ]);
 
         User::find(1)->assignRole($pemilik);

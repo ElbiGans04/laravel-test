@@ -70,16 +70,16 @@ class PermissionSeeder extends Seeder
         ]);
         // Car
         Permission::create([
-            "name" => "car.create",
+            "name" => "cars.create",
         ]);
         Permission::create([
-            "name" => "car.read",
+            "name" => "cars.read",
         ]);
         Permission::create([
-            "name" => "car.update",
+            "name" => "cars.update",
         ]);
         Permission::create([
-            "name" => "car.delete",
+            "name" => "cars.delete",
         ]);
 
     }
