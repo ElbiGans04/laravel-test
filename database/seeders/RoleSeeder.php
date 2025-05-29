@@ -51,6 +51,6 @@ class RoleSeeder extends Seeder
 
         User::find(1)->assignRole($pemilik);
         User::find(2)->assignRole($admin);
-        User::find(2)->assignRole($petugas);
+        User::find(3)->assignRole($petugas);
     }
 }
