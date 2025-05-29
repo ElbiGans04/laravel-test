@@ -20,7 +20,20 @@ class AuthController extends Controller
             $request->session()->flash('modal-title', 'Berhasil');
             $request->session()->flash('modal-text', 'Selamat Anda Berhasil Login');
             $request->session()->flash('modal-icon', 'success');
-            return redirect()->route('index');
+
+            $role = Auth::user()->roles[0]['name'];
+
+            switch ($role) {
+                case 'petugas': {
+                    return redirect()->route('cars.index');
+                }
+                case 'admin': {
+                    return redirect()->route('books.index');
+                }
+                default: {
+                    return redirect()->route('index');
+                }
+            }
         }
 
         $request->session()->flash('message-type', 'failed');
