@@ -133,7 +133,7 @@ Route::middleware(['auth:web'])->group(function () {
                     return $html;
                 })->rawColumns(['permissions', 'actions'])->make(true);
             }
-            return view('roles');
+            return view('roles.index');
         })->name('index');
 
         Route::get('/create', function (Request $request) {
@@ -239,7 +239,7 @@ Route::middleware(['auth:web'])->group(function () {
                 $data = Permission::query();
                 return DataTables::of($data)->make(true);
             }
-            return view('permission');
+            return view('permissions.index');
         })->name('index');
 
         Route::get('/create', function (Request $request) {
