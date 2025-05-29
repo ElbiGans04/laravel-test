@@ -48,35 +48,46 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item {{ Route::currentRouteName() == "index" ? 'active' : '' }}">
-                <a class="nav-link" href="{{route('index')}}">
-                    <i class="fas fa-users"></i>
-                    <span>Users</span></a>
-            </li>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider">
-
-            <!-- Heading -->
-            <div class="sidebar-heading">
-                SETTING
-            </div>
+            @can('users.read')
+                <li class="nav-item {{ Route::currentRouteName() == "index" ? 'active' : '' }}">
+                    <a class="nav-link" href="{{route('index')}}">
+                        <i class="fas fa-users"></i>
+                        <span>Users</span></a>
+                </li>
+            @endcan
 
             <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item {{ (Route::currentRouteName() == "permissions.index" || Route::currentRouteName() == "roles.index") ? 'active' : '' }}">
-                <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>Auth</span>
-                </a>
-                <div id="collapseTwo" class="collapse {{ (Route::currentRouteName() == "permissions.index" || Route::currentRouteName() == "roles.index") ? 'show' : '' }}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Authorization :</h6>
-                        <a class="collapse-item {{ Route::currentRouteName() == "permissions.index" ? "active" : '' }}" href="{{ route('permissions.index') }}">Permissions</a>
-                        <a class="collapse-item {{ Route::currentRouteName() == "roles.index" ? "active" : '' }}" href="{{ route('roles.index') }}">Roles</a>
-                    </div>
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+            @if(auth()->user()->can('permissions.read') || auth()->user()->can('roles.read'))
+                <!-- Heading -->
+                <div class="sidebar-heading">
+                    SETTING
                 </div>
-            </li>
+                <li
+                    class="nav-item {{ (Route::currentRouteName() == "permissions.index" || Route::currentRouteName() == "roles.index") ? 'active' : '' }}">
+                    <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true"
+                        aria-controls="collapseTwo">
+                        <i class="fas fa-fw fa-cog"></i>
+                        <span>Auth</span>
+                    </a>
+                    <div id="collapseTwo"
+                        class="collapse {{ (Route::currentRouteName() == "permissions.index" || Route::currentRouteName() == "roles.index") ? 'show' : '' }}"
+                        aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <h6 class="collapse-header">Authorization :</h6>
+                            @can('permissions.read')
+                                <a class="collapse-item {{ Route::currentRouteName() == "permissions.index" ? "active" : '' }}"
+                                    href="{{ route('permissions.index') }}">Permissions</a>
+                            @endcan
+                            @can('roles.read')
+                                <a class="collapse-item {{ Route::currentRouteName() == "roles.index" ? "active" : '' }}"
+                                    href="{{ route('roles.index') }}">Roles</a>
+                            @endcan
+                        </div>
+                    </div>
+                </li>
+            @endif
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
