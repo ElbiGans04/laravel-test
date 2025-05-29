@@ -28,6 +28,7 @@
                                 <th>ID</th>
                                 <th>Nama</th>
                                 <th>Email</th>
+                                <th>Role</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -55,6 +56,7 @@
                     { data: 'id', name: 'id' },
                     { data: 'name', name: 'name' },
                     { data: 'email', name: 'email' },
+                    { data: 'role', name: 'role' },
                     {
                         data: null,
                         render: function (data) {

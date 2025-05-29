@@ -25,8 +25,10 @@ Route::middleware(['auth:web'])->group(function () {
         // return view('welcome');
         // return User::where('id', '!=', Auth::user()['id'])->get();
         if ($request->ajax()) {
-            $data = User::where('id', '!=', Auth::user()['id'])->get();
-            return DataTables::of($data)->make(true);
+            $data = User::where('id', '!=', Auth::user()['id'])->with('roles')->get();
+            return DataTables::of($data)->addColumn('role', function ($user) {
+                return $user->roles->pluck('name')->implode(', ');
+            })->make(true);
         }
 
         return view('index');
@@ -74,7 +76,7 @@ Route::middleware(['auth:web'])->group(function () {
 
             }
 
-            return view('index');
+            return redirect()->route('index');
         })->name('update.post');
 
         Route::get('/delete', function (Request $request) {
