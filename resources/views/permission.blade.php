@@ -10,12 +10,12 @@
         <p class="mb-4">Menampilkan semua data yang terkait dengan Permission</a>.</p>
 
         <!-- Create -->
-        @can('permissions.create')
+        <!-- @can('permissions.create')
             <a href="{{ route('permissions.create') }}" class="btn btn-primary mb-4" type="button">
                 <i class="fas fa-plus fa-sm mr-2"></i>
                 <span>Tambah Data </span>
             </a>
-        @endcan
+        @endcan -->
 
         <!-- DataTales Example -->
         <div class="card shadow mb-4">
@@ -29,7 +29,6 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Nama</th>
-                                <th>Actions</th>
                             </tr>
                         </thead>
                     </table>
@@ -54,15 +53,6 @@
                 columns: [
                     { data: 'id', name: 'id' },
                     { data: 'name', name: 'name' },
-                    {
-                        data: null,
-                        render: function (data) {
-                            return `
-                                        <a href='{{ route('permissions.update')}}?id=${data?.id}' class='btn btn-primary'>Update</a>
-                                        <a href='javascript:DeleteData(${data?.id})' class='btn btn-danger'>Delete</a>
-                                    `
-                        }
-                    }
                 ]
             });
         });

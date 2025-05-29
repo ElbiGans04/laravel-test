@@ -10,12 +10,12 @@
         <p class="mb-4">Menampilkan semua data yang terkait dengan Roles</a>.</p>
 
         <!-- Create -->
-        @can('roles.create')
+        <!-- @can('roles.create')
             <a href="{{ route('roles.create') }}" class="btn btn-primary mb-4" type="button">
                 <i class="fas fa-plus fa-sm mr-2"></i>
                 <span>Tambah Data </span>
             </a>
-        @endcan
+        @endcan -->
 
         <!-- DataTales Example -->
         <div class="card shadow mb-4">

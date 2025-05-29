@@ -121,14 +121,14 @@ Route::middleware(['auth:web'])->group(function () {
                     $html = '';
                     $data = Auth::user()->roles[0]['permissions'];
                     $isAllowUpdate = collect($data)->contains('name', 'roles.update');
-                    $isAllowDelete = collect($data)->contains('name', 'roles.delete');
+                    // $isAllowDelete = collect($data)->contains('name', 'roles.delete');
 
                     if ($isAllowUpdate) {
                         $html .= "<a href='" . route('roles.update') . "?id=" . $user['id'] . "' class='btn m-1 btn-primary'>Update</a>";
                     }
-                    if ($isAllowDelete) {
-                        $html .= "<a href='" . route('roles.delete') . "?id=" . $user['id'] . "' class='btn m-1 btn-danger'>Delete</a>";
-                    }
+                    // if ($isAllowDelete) {
+                    //     $html .= "<a href='" . route('roles.delete') . "?id=" . $user['id'] . "' class='btn m-1 btn-danger'>Delete</a>";
+                    // }
 
                     return $html;
                 })->rawColumns(['permissions', 'actions'])->make(true);
