@@ -56,6 +56,12 @@
                 </li>
             @endcan
 
+            <hr class="sidebar-divider">
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Data Master
+            </div>
+
             <!-- Nav Item - Dashboard -->
             @can('books.read')
                 <li class="nav-item {{ Route::currentRouteName() == "books.index" ? 'active' : '' }}">
