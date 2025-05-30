@@ -7,14 +7,11 @@ use App\Http\Controllers\CarController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
-use App\Jobs\Elbi;
 use App\Jobs\UpdateExportStatusToCompleted;
-use App\Models\Car;
 use App\Models\Export;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Route;
-use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\DataTables;
 
 /*
@@ -64,43 +61,13 @@ Route::middleware(['auth:web'])->group(function () {
         Route::get('/update', [CarController::class, "updateView"])->name('update')->middleware(['permission:cars.update']);
         Route::post('/update', [CarController::class, "update"])->name('update.post')->middleware(['permission:cars.update']);
         Route::get('/delete', [CarController::class, "delete"])->name('delete')->middleware(['permission:cars.delete']);
+
         // Export
-        Route::get('/export', function (Request $request) {
-            if ($request->ajax()) {
-                $data = Export::query();
-                return DataTables::of($data)->addColumn('actions', function ($item) {
-                    $html = "";
-                    if ($item['status'] == "completed") {
-                        $html = '<a href="' . route('cars.export.download', ["path" => $item['path']]) . '"class="btn btn-primary">Download</button>';
-                    }
-
-                    return $html;
-                })->rawColumns(['actions'])->make(true);
-            }
-            return view('export.index');
-        })->name('export.index')->middleware(['permission:export.read']);
-
-        Route::get('/exports/create', function (Request $request) {
-            Elbi::dispatch();
-            $data = Carbon::now()->format('Y-m-d H:i:s.u');
-            $fileName = "test-dummy-" . $data . ".xlsx";
-            $export = Export::create([
-                "path" => $fileName
-            ]);
-            $car = (new CarsExport($export))->queue($fileName, "public")->chain([
-                new UpdateExportStatusToCompleted($export),
-            ]);
-
-            $request->session()->flash('modal-title', 'Berhasil');
-            $request->session()->flash('modal-text', 'Data berhasil diexport');
-            $request->session()->flash('modal-icon', 'success');
-
-            return redirect()->route('cars.export.index');
-        })->name('export.create')->middleware(['permission:export.create']);
-
-        Route::get('/exports/download', function (Request $request) {
-            return Storage::download("public/".$request->input()['path']);
-        })->name('export.download')->middleware(['permission:export.read']);
+        Route::group(['prefix' => '/export', "as" => "export."], function () {
+            Route::get('', [CarController::class, "exportView"])->name('index')->middleware(['permission:export.read']);
+            Route::get('/create', [CarController::class, "export"])->name('create')->middleware(['permission:export.create']);
+            Route::get('download', [CarController::class, "exportDownload"])->name('download')->middleware(['permission:export.read']);
+        });
     });
 
     Route::group(['prefix' => '/books', 'as' => 'books.'], function () {

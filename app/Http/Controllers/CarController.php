@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\CarsExport;
+use App\Jobs\UpdateExportStatusToCompleted;
 use App\Models\Car;
+use App\Models\Export;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\DataTables;
 
 class CarController extends Controller
@@ -101,5 +106,44 @@ class CarController extends Controller
         $request->session()->flash('modal-icon', 'success');
 
         return redirect()->route('cars.index');
+    }
+
+    function exportView(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = Export::query();
+            return DataTables::of($data)->addColumn('actions', function ($item) {
+                $html = "";
+                if ($item['status'] == "completed") {
+                    $html = '<a href="' . route('cars.export.download', ["path" => $item['path']]) . '"class="btn btn-primary">Download</button>';
+                }
+
+                return $html;
+            })->rawColumns(['actions'])->make(true);
+        }
+        return view('export.index');
+    }
+
+    function export(Request $request)
+    {
+        $data = Carbon::now()->format('Y-m-d H:i:s.u');
+        $fileName = "test-dummy-" . $data . ".xlsx";
+        $export = Export::create([
+            "path" => $fileName
+        ]);
+        $car = (new CarsExport($export))->queue($fileName, "public")->chain([
+            new UpdateExportStatusToCompleted($export),
+        ]);
+
+        $request->session()->flash('modal-title', 'Berhasil');
+        $request->session()->flash('modal-text', 'Data berhasil diexport');
+        $request->session()->flash('modal-icon', 'success');
+
+        return redirect()->route('cars.export.index');
+    }
+
+    function exportDownload(Request $request)
+    {
+        return Storage::download("public/" . $request->input()['path']);
     }
 }
