@@ -27,7 +27,7 @@
 
         <!-- Create -->
         @can('export.read')
-            <a href="{{ route('cars.create') }}" class="btn btn-primary mb-4" type="button">
+            <a href="{{ route('cars.export.index') }}" class="btn btn-primary mb-4" type="button">
                 <i class="fas fa-plus fa-sm mr-2"></i>
                 <span>View Export Data </span>
             </a>
