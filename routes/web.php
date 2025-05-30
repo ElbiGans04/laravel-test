@@ -1,12 +1,20 @@
 <?php
 
+use App\Exports\CarsExport;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\CarController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Jobs\UpdateExportStatusToCompleted;
+use App\Models\Car;
+use App\Models\Export;
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Route;
+use Maatwebsite\Excel\Facades\Excel;
+use Yajra\DataTables\DataTables;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,6 +63,34 @@ Route::middleware(['auth:web'])->group(function () {
         Route::get('/update', [CarController::class, "updateView"])->name('update')->middleware(['permission:cars.update']);
         Route::post('/update', [CarController::class, "update"])->name('update.post')->middleware(['permission:cars.update']);
         Route::get('/delete', [CarController::class, "delete"])->name('delete')->middleware(['permission:cars.delete']);
+        // Export
+        Route::get('/export', function (Request $request) {
+            if ($request->ajax()) {
+                $data = Export::query();
+                return DataTables::of($data)->addColumn('actions', function () {
+                    $html = '<a class="btn btn-primary">Download</button>';
+                    return $html;
+                })->rawColumns(['actions'])->make(true);
+            }
+            return view('export.index');
+        })->name('export.index')->middleware(['permission:export.read']);
+
+        Route::get('/exports/create', function (Request $request) {
+            $data = Carbon::now()->format('Y-m-d H:i:s.u');
+            $fileName = "test-dummy-" . $data . ".xlsx";
+            $export = Export::create([
+                "path" => $fileName
+            ]);
+            $car = (new CarsExport($export))->queue($fileName)->allOnQueue('exports')->chain([
+                new UpdateExportStatusToCompleted($export),
+            ]);
+
+            $request->session()->flash('modal-title', 'Berhasil');
+            $request->session()->flash('modal-text', 'Data berhasil diexport');
+            $request->session()->flash('modal-icon', 'success');
+
+            return redirect()->route('cars.export.index');
+        })->name('export.create')->middleware(['permission:export.create']);
     });
 
     Route::group(['prefix' => '/books', 'as' => 'books.'], function () {

@@ -81,6 +81,13 @@ class PermissionSeeder extends Seeder
         Permission::create([
             "name" => "cars.delete",
         ]);
+        // Export
+        Permission::create([
+            "name" => "export.read",
+        ]);
+        Permission::create([
+            "name" => "export.create",
+        ]);
 
     }
 }

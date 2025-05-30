@@ -17,6 +17,23 @@
             </a>
         @endcan
 
+        <!-- Create -->
+        @can('export.create')
+            <a href="{{ route('cars.export.create') }}" class="btn btn-primary mb-4" type="button">
+                <i class="fas fa-plus fa-sm mr-2"></i>
+                <span>Export Data </span>
+            </a>
+        @endcan
+
+        <!-- Create -->
+        @can('export.read')
+            <a href="{{ route('cars.create') }}" class="btn btn-primary mb-4" type="button">
+                <i class="fas fa-plus fa-sm mr-2"></i>
+                <span>View Export Data </span>
+            </a>
+        @endcan
+
+
         <!-- DataTales Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
