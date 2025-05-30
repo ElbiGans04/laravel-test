@@ -1,6 +1,6 @@
 @extends('layouts.index')
 @section('title')
-    Permission | Bengkel APP
+    Permission |  {{ config('app.name') }}
 @endsection
 @section('content')
     <div class="container-fluid">

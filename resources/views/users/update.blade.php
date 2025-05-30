@@ -1,6 +1,6 @@
 @extends('layouts.index')
 @section('title')
-    User | Bengkel APP
+    User |  {{ config('app.name') }}
 @endsection
 @section('content')
     <div class="container-fluid">
