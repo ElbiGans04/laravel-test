@@ -71,7 +71,7 @@ Route::middleware(['auth:web'])->group(function () {
                 return DataTables::of($data)->addColumn('actions', function ($item) {
                     $html = "";
                     if ($item['status'] == "completed") {
-                        $html = '<a href="/'.$item['path'].'"class="btn btn-primary">Download</button>';
+                        $html = '<a href="' . route('cars.export.download', ["path" => $item['path']]) . '"class="btn btn-primary">Download</button>';
                     }
 
                     return $html;
@@ -87,7 +87,7 @@ Route::middleware(['auth:web'])->group(function () {
             $export = Export::create([
                 "path" => $fileName
             ]);
-            $car = (new CarsExport($export))->queue("exports/".$fileName, "public")->chain([
+            $car = (new CarsExport($export))->queue($fileName, "public")->chain([
                 new UpdateExportStatusToCompleted($export),
             ]);
 
@@ -97,6 +97,10 @@ Route::middleware(['auth:web'])->group(function () {
 
             return redirect()->route('cars.export.index');
         })->name('export.create')->middleware(['permission:export.create']);
+
+        Route::get('/exports/download', function (Request $request) {
+            return Storage::download("public/".$request->input()['path']);
+        })->name('export.download')->middleware(['permission:export.read']);
     });
 
     Route::group(['prefix' => '/books', 'as' => 'books.'], function () {
