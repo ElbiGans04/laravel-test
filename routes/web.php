@@ -7,6 +7,7 @@ use App\Http\Controllers\CarController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Jobs\Elbi;
 use App\Jobs\UpdateExportStatusToCompleted;
 use App\Models\Car;
 use App\Models\Export;
@@ -67,8 +68,12 @@ Route::middleware(['auth:web'])->group(function () {
         Route::get('/export', function (Request $request) {
             if ($request->ajax()) {
                 $data = Export::query();
-                return DataTables::of($data)->addColumn('actions', function () {
-                    $html = '<a class="btn btn-primary">Download</button>';
+                return DataTables::of($data)->addColumn('actions', function ($item) {
+                    $html = "";
+                    if ($item['status'] == "completed") {
+                        $html = '<a href="/'.$item['path'].'"class="btn btn-primary">Download</button>';
+                    }
+
                     return $html;
                 })->rawColumns(['actions'])->make(true);
             }
@@ -76,12 +81,13 @@ Route::middleware(['auth:web'])->group(function () {
         })->name('export.index')->middleware(['permission:export.read']);
 
         Route::get('/exports/create', function (Request $request) {
+            Elbi::dispatch();
             $data = Carbon::now()->format('Y-m-d H:i:s.u');
             $fileName = "test-dummy-" . $data . ".xlsx";
             $export = Export::create([
                 "path" => $fileName
             ]);
-            $car = (new CarsExport($export))->queue($fileName)->allOnQueue('exports')->chain([
+            $car = (new CarsExport($export))->queue("exports/".$fileName, "public")->chain([
                 new UpdateExportStatusToCompleted($export),
             ]);
 

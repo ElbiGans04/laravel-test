@@ -30,6 +30,6 @@ class Elbi implements ShouldQueue
      */
     public function handle()
     {
-        return 'OK GANS';
+        \Log::info('Test queue executed.');
     }
 }
